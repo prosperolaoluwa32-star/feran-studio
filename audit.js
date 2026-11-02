@@ -301,7 +301,8 @@ var AUDIT_GATE = true;
     out.innerHTML = '<div class="report">' + h + '<div class="gated' + (showAll ? '' : ' locked') + '" id="gated">' + gated + '</div>' + (showAll ? '' : gateHtml(dom, sc.overall, type)) + '</div>';
     out.hidden = false;
     var aw = $('#audit-what'); if (aw) aw.hidden = true;
-    lastRun = { f: f, type: type, psi: psi, score: sc.overall };
+    lastRun = { f: f, type: type, psi: psi, score: sc.overall, summary: summary(f, type, psi, sc, issues) };
+    if (!opts.example) sendForm('audit-report', lastRun.summary);
     var p = out.querySelector('[data-print]'); if (p) p.addEventListener('click', function () { window.print(); });
     wireGate();
     out.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -320,6 +321,32 @@ var AUDIT_GATE = true;
     return n[p] || 'We couldn’t identify a common website builder, so this is likely custom-built or uses a less common platform.';
   }
 
+
+  // ---------- report to Feran Studio (Netlify Forms → email notification) ----------
+  function summary(f, type, psi, sc, issues) {
+    var c = f.contacts || {}; var sl = c.socialLinks || {};
+    return {
+      website: f.finalUrl, business_name: c.businessName || domainOf(f.finalUrl), business_type: TYPES[type].label,
+      overall_score: sc.overall + '/100 (' + verdict(sc.overall) + ')',
+      category_scores: CATS.map(function (k) { return k.name + ' ' + sc.cats[k.id]; }).join(' · '),
+      top_issues: issues.slice(0, 8).map(function (k, i) { return (i + 1) + '. [' + k.sev.toUpperCase() + '] ' + k.title + ' (' + k.observed + ')'; }).join('\n') || 'No major issues found',
+      phones: (c.phones || []).join(', ') || 'None found on site',
+      emails: (c.emails || []).join(', ') || 'None found on site',
+      social_profiles: Object.keys(sl).map(function (k) { return k + ': ' + sl[k]; }).join('\n') || 'None linked on site',
+      platform: f.platform,
+      mobile_speed: psi && psi.perf != null ? psi.perf + '/100' + (psi.lcp ? ' (LCP ' + psi.lcp + ')' : '') : 'Not measured',
+      domain_registered: f.domain && f.domain.created ? fmtDate(f.domain.created) : 'Unknown',
+      scanned_at: new Date().toISOString()
+    };
+  }
+  function sendForm(name, fields, cb) {
+    var done = cb || function () {};
+    if (!LIVE) { done(); return; }
+    var data = new URLSearchParams(); data.append('form-name', name);
+    Object.keys(fields).forEach(function (k) { data.append(k, fields[k]); });
+    fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: data.toString() }).then(done, done);
+  }
+
   // ---------- email gate ----------
   var unlocked = false; var lastRun = null;
   try { unlocked = sessionStorage.getItem('fs-audit-unlocked') === '1'; } catch (e) {}
@@ -333,17 +360,13 @@ var AUDIT_GATE = true;
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (!form.checkValidity()) { form.reportValidity(); return; }
-      var data = new URLSearchParams();
-      data.append('form-name', 'audit-lead');
-      data.append('name', $('#g-name').value); data.append('email', $('#g-email').value);
-      data.append('website', lastRun ? lastRun.f.finalUrl : ''); data.append('business_type', lastRun ? TYPES[lastRun.type].label : '');
-      data.append('score', lastRun ? String(lastRun.score) : '');
+      var fields = { name: $('#g-name').value, email: $('#g-email').value };
+      if (lastRun && lastRun.summary) Object.keys(lastRun.summary).forEach(function (k) { fields[k] = lastRun.summary[k]; });
       var done = function () {
         unlocked = true; try { sessionStorage.setItem('fs-audit-unlocked', '1'); } catch (e2) {}
         $('#gated').classList.remove('locked'); var g = $('#gate'); if (g) g.remove();
       };
-      if (LIVE) fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: data.toString() }).then(done, done);
-      else done();
+      sendForm('audit-lead', fields, done);
     });
   }
 

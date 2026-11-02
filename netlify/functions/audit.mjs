@@ -184,6 +184,23 @@ function inspect(html, finalUrl) {
   const policy = (re) => linkL.some(l => re.test(l)) || re.test(textL);
   const mixed = u.protocol === 'https:' && /(?:src)\s*=\s*["']http:\/\//i.test(html);
 
+  // contact details a business publishes on its site (for follow-up)
+  const uniq = (a) => [...new Set(a.filter(Boolean))];
+  const telHref = links.filter(l => /^tel:/i.test(l)).map(l => decodeURIComponent(l.replace(/^tel:/i, '')).trim());
+  const telText = (text.match(/(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}\b/g) || []);
+  const phones = uniq([...telHref, ...telText].map(p => p.replace(/\s+/g, ' ').trim())).slice(0, 3);
+  const mailHref = links.filter(l => /^mailto:/i.test(l)).map(l => decodeURIComponent(l.replace(/^mailto:/i, '').split('?')[0]).trim());
+  const mailText = (text.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g) || []).filter(e => !/\.(png|jpe?g|gif|webp|svg)$/i.test(e) && !/sentry|wixpress|example\.com/i.test(e));
+  const emails = uniq([...mailHref, ...mailText].map(e => e.toLowerCase())).slice(0, 3);
+  const profile = (re) => links.find(l => re.test(l.toLowerCase()) && !/sharer|share\?|intent\/|\/plugins\//i.test(l)) || null;
+  const socialLinks = {
+    instagram: profile(/instagram\.com\/[a-z0-9_.]+/), facebook: profile(/facebook\.com\/[a-z0-9_.-]+/), tiktok: profile(/tiktok\.com\/@/),
+    linkedin: profile(/linkedin\.com\/(company|in)\//), x: profile(/(twitter|x)\.com\/[a-z0-9_]+/), youtube: profile(/youtube\.com\//),
+    whatsapp: profile(/wa\.me|api\.whatsapp\.com/)
+  };
+  Object.keys(socialLinks).forEach(k => { if (!socialLinks[k]) delete socialLinks[k]; });
+  const businessName = metaContent(html, 'og:site_name') || (title ? title.split(/\s[|–—-]\s/)[0].trim() : null);
+
   return {
     title, titleLength: title ? title.length : 0,
     metaDescription: metaContent(html, 'description'),
@@ -198,6 +215,7 @@ function inspect(html, finalUrl) {
     noindex: /noindex/i.test(metaContent(html, 'robots') || ''),
     scriptCount: scripts.length, externalScripts: srcs.length,
     analytics, platform, socials,
+    contacts: { businessName, phones, emails, socialLinks },
     wordCount: text ? text.split(/\s+/).filter(w => /[a-z]/i.test(w)).length : 0,
     linkCount: links.length,
     telLinks: linkL.filter(l => l.startsWith('tel:')).length,

@@ -186,6 +186,32 @@ var GA_ID = '';
     } catch (e) {}
   })();
 
+
+  // ---- Cost calculator (why-website page)
+  (function () {
+    var v = document.getElementById('c-value'); if (!v) return;
+    var ids = ['c-value', 'c-lost', 'c-app', 'c-fee'];
+    var money = function (n) { return '$' + Math.round(n).toLocaleString('en-US'); };
+    var calc = function () {
+      var val = +v.value, lost = +document.getElementById('c-lost').value, app = +document.getElementById('c-app').value, fee = +document.getElementById('c-fee').value;
+      document.getElementById('o-value').textContent = money(val);
+      document.getElementById('o-lost').textContent = lost;
+      document.getElementById('o-app').textContent = app;
+      document.getElementById('o-fee').textContent = fee + '%';
+      ids.forEach(function (id) { var el = document.getElementById(id); el.style.setProperty('--fill', ((el.value - el.min) / (el.max - el.min) * 100) + '%'); });
+      var lostY = val * lost * 52, feeY = val * app * 12 * fee / 100, tot = lostY + feeY;
+      document.getElementById('r-lost').textContent = money(lostY);
+      document.getElementById('r-fee').textContent = money(feeY);
+      document.getElementById('r-total').textContent = money(tot);
+      var pay = document.getElementById('r-pay');
+      if (tot <= 0) { pay.textContent = 'Move the sliders to see what your business could keep.'; return; }
+      var weeks = Math.max(1, Math.ceil(1200 / (tot / 52)));
+      pay.innerHTML = 'A Starter website from $1,200 would pay for itself in about <b>' + (weeks > 104 ? 'two years or more' : weeks + (weeks === 1 ? ' week' : ' weeks')) + '</b>.';
+    };
+    ids.forEach(function (id) { document.getElementById(id).addEventListener('input', calc); });
+    calc();
+  })();
+
   // ---- From Sketch to Live opening
   var intro = document.querySelector('.intro');
   if (intro) {
