@@ -1,0 +1,21 @@
+# Feran Studio — search engines and AI assistants are welcome.
+User-agent: *
+Allow: /
+Disallow: /thank-you.html
+
+User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-SearchBot
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://feranstudio.com/sitemap.xml

@@ -1,0 +1,38 @@
+# Feran Studio
+
+> Feran Studio is a remote web and app design studio founded in 2015. It designs, builds, hosts and launches new websites, and fixes, updates and grows existing ones (website repair, redesigns, SEO and Google visibility, marketing and e-commerce consulting). It also builds Shopify stores, executive portfolio websites, iOS and Android apps, and short video ads for businesses and professionals. 227 projects delivered for clients on five continents, with a focus on the United States.
+
+## Key facts
+- Founder & Creative Director: Prosper Oluwaferanmi "Feran" Olaoluwa
+- Team: Elizabeth Adeyeye (Project Manager), Alex Oladele (Lead Web Developer), Michael Ajeyomi (UI/UX Designer), Segun Yusuf (Mobile App Developer), Faith Adunola (Video & Motion Designer)
+- Platforms: custom code, WordPress, Shopify, Wix, Webflow, iOS, Android
+- Contact: hello@feranstudio.com · +1 (305) 647-2998 (phone & WhatsApp)
+- Free 30-minute consultation: https://calendly.com/feranstudio-co/30min
+
+## Starting prices (USD)
+- Websites: Starter $1,200 · Business $2,800 · Premium $5,500
+- Shopify stores: Launch $2,500 · Custom $6,000
+- Executive portfolio websites: $1,500 · Executive Presence $3,000
+- Mobile apps: MVP $9,000 · Full product $20,000
+- Video ads & promos: single reel $250 · 4-reel pack $850 · monthly $1,500
+- Care plans: $49/month · $149/month
+- Website rescue (fixing broken forms, bookings, pages, mobile layout, speed, publishing errors): from $250
+- SEO & Google setup: from $600 · Growth retainer (SEO, updates, marketing & e-commerce consulting): from $450/month
+- Terms: 50% deposit, balance at launch; fixed quotes; clients own their site once paid in full
+
+## Selected work
+- JAY Search Partners (jaysearchpartners.com): executive search website, Webflow → Netlify
+- TalentScript (talentscriptagency.com): career branding agency website
+- ThriveArc.ai (thrivearc.ai): AI platform website, plus the DreamTrace AI mobile app (App Store & Google Play)
+- Matthew Stark, CUSP (matthewstarkcusp.com): executive portfolio website, Webflow
+- Virtue Careers (virtuecareers.com): hand-coded personal brand website
+- JEM Search & Apply (jemsearchapply.com): two-sided executive search website
+- Faith Heroic Generation (faithheroicgeneration.com): nonprofit website
+
+## Pages
+- [Home](https://feranstudio.com/)
+- [Work](https://feranstudio.com/work.html)
+- [Services](https://feranstudio.com/services.html)
+- [Pricing](https://feranstudio.com/pricing.html)
+- [About](https://feranstudio.com/about.html)
+- [Contact](https://feranstudio.com/contact.html)
